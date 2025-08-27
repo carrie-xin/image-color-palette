@@ -13,11 +13,135 @@
    * @return {void}
    */
   function init(img){
+    // 添加配置UI
+    const configUI = document.createElement('div');
+    configUI.className = 'config-ui';
+    
+    // 色卡数量选择
+    // 修改色卡数量选项
+    // 修复色卡数量选项重复问题
+    const countSelect = document.createElement('select');
+    countSelect.id = 'colorCount';
+    [4, 6, 8].forEach(num => {
+      const option = document.createElement('option');
+      option.value = num;
+      option.textContent = `${num}色`;
+      if(num === 6) option.selected = true;
+      countSelect.appendChild(option);
+    });
+    
+    // 色号类型选择
+    const typeSelect = document.createElement('select');
+    typeSelect.id = 'colorType';
+    ['HEX', 'RGB'].forEach(type => {
+      const option = document.createElement('option');
+      option.value = type;
+      option.textContent = type;
+      option.selected = type === 'HEX';
+      typeSelect.appendChild(option);
+    });
+    
+    // 添加事件监听
+    countSelect.addEventListener('change', () => {
+      const count = parseInt(countSelect.value);
+      const pixels = sampleImagePixels(img, 600);
+      const colors = kmeansColors(pixels, count, 10);
+      renderPalette(colors);
+    });
+    
+    typeSelect.addEventListener('change', () => {
+      const colors = Array.from(document.querySelectorAll('.swatch-color'))
+        .map(el => {
+          const bg = getComputedStyle(el).backgroundColor;
+          // 将rgb格式转换回hex
+          if (bg.startsWith('rgb')) {
+            const [r, g, b] = bg.match(/\d+/g).map(Number);
+            return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+          }
+          return bg;
+        });
+      renderPalette(colors);
+    });
+    
+    // 一键复制按钮
+    const copyAllBtn = document.createElement('button');
+    copyAllBtn.className = 'copy-all';
+    copyAllBtn.textContent = '复制全部色号';
+    copyAllBtn.addEventListener('click', copyAllColors);
+    
+    configUI.appendChild(document.createTextNode('色卡数量:'));
+    configUI.appendChild(countSelect);
+    configUI.appendChild(document.createTextNode('色号格式:'));
+    configUI.appendChild(typeSelect);
+    configUI.appendChild(copyAllBtn);
+    
+    document.getElementById('app').insertBefore(configUI, document.getElementById('paletteWrap'));
+    
     if (!img.complete) {
       img.addEventListener('load', () => handleImage(img));
     } else {
       handleImage(img);
     }
+  }
+
+  /**
+   * 复制全部色号到剪贴板
+   * @return {void}
+   */
+  function copyAllColors() {
+    const colorType = document.getElementById('colorType').value;
+    const colors = Array.from(document.querySelectorAll('.swatch-hex'))
+      .map(el => el.textContent);
+    
+    if (vscode){
+      vscode.postMessage({ type: 'copyAll', colors, colorType });
+    } else if (navigator?.clipboard?.writeText){
+      navigator.clipboard.writeText(colors.join('\n'));
+    }
+  }
+
+  /**
+   * 将 HEX 或 RGB 字符串渲染为色卡 UI
+   * @param {string[]} colors 颜色数组
+   * @return {void}
+   */
+  function renderPalette(colors){
+    const wrap = document.getElementById('paletteWrap');
+    const colorType = document.getElementById('colorType')?.value || 'HEX';
+    if (!wrap) return;
+    wrap.innerHTML = '';
+
+    (colors || []).forEach(hex => {
+      const item = document.createElement('div');
+      item.className = 'swatch';
+
+      const colorBlock = document.createElement('div');
+      colorBlock.className = 'swatch-color';
+      colorBlock.style.background = hex;
+
+      const label = document.createElement('button');
+      label.className = 'swatch-hex';
+      label.textContent = colorType === 'RGB' ? hexToRgb(hex) : hex;
+      label.title = '点击复制色号';
+      label.addEventListener('click', () => copyHex(hex));
+      colorBlock.addEventListener('click', () => copyHex(hex));
+
+      item.appendChild(colorBlock);
+      item.appendChild(label);
+      wrap.appendChild(item);
+    });
+  }
+
+  /**
+   * HEX 转 RGB 字符串
+   * @param {string} hex HEX 颜色值
+   * @return {string} RGB 字符串
+   */
+  function hexToRgb(hex) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgb(${r}, ${g}, ${b})`;
   }
 
   /**
@@ -34,38 +158,6 @@
       console.error(err);
       renderError(String(err));
     }
-  }
-
-  /**
-   * 将 HEX 字符串渲染为色卡 UI
-   * 上层：色块；下层：HEX 文本，可点击复制
-   * @param {string[]} hexColors HEX 颜色数组（按频次降序）
-   * @return {void}
-   */
-  function renderPalette(hexColors){
-    const wrap = document.getElementById('paletteWrap');
-    if (!wrap) return;
-    wrap.innerHTML = '';
-
-    (hexColors || []).forEach(hex => {
-      const item = document.createElement('div');
-      item.className = 'swatch';
-
-      const colorBlock = document.createElement('div');
-      colorBlock.className = 'swatch-color';
-      colorBlock.style.background = hex;
-
-      const label = document.createElement('button');
-      label.className = 'swatch-hex';
-      label.textContent = hex;
-      label.title = '点击复制色号';
-      label.addEventListener('click', () => copyHex(hex));
-      colorBlock.addEventListener('click', () => copyHex(hex));
-
-      item.appendChild(colorBlock);
-      item.appendChild(label);
-      wrap.appendChild(item);
-    });
   }
 
   /**

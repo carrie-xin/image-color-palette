@@ -16,10 +16,6 @@
   "contributes": {
     "commands": [
       {
-        "command": "image-color-palette.helloWorld",
-        "title": "Hello World"
-      },
-      {
         "command": "image-color-palette.generatePalette",
         "title": "生成图片色卡"
       }

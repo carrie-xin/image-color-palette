@@ -7,8 +7,9 @@
 #app {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  /* gap: 16px; */
   padding: 16px;
+  min-width: 500px;
   max-width: 100%;
   box-sizing: border-box;
 }
@@ -17,6 +18,7 @@
 .image-wrap {
   display: flex;
   justify-content: center;
+  height: 400px;
   max-width: 100%;
   overflow: hidden;
   border-radius: 4px;
@@ -24,26 +26,29 @@
 }
 
 .image-wrap img {
-  max-width: 100%;
-  max-height: 400px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 
 /* 色卡容器 */
 .palette-wrap {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 16px;
+  flex-wrap: nowrap;
+  /* gap: 8px; */
+  /* justify-content: space-between;
+  align-items: center; */
+  margin-bottom: 16px;
 }
 
 /* 单个色块 */
 .swatch {
-  display: flex;
+  flex: 1;
+  /* display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 80px;
+  min-width: 20px;
+  width: 100%; */
   cursor: pointer;
   transition: transform 0.2s;
 }
@@ -54,9 +59,9 @@
 
 /* 颜色方块 */
 .swatch-color {
-  width: 80px;
-  height: 60px;
-  border-radius: 4px;
+  width: 100%;
+  height: 40px;
+  /* border-radius: 4px; */
   box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
@@ -86,4 +91,149 @@
   background: #fce4ec;
   border-radius: 4px;
   text-align: center;
+}
+
+/* 配置UI */
+.config-ui {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 8px;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.config-ui select {
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+}
+
+/* 一键复制按钮 */
+.copy-all {
+  padding: 4px 8px;
+  margin-left: auto;
+  background: #007acc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.copy-all:hover {
+  background: #0062a3;
+}
+
+/* 色号文本 */
+.swatch-hex {
+  color: #333;
+  background: #f8f8f8;
+}
+
+/* 深色主题适配 */
+.vscode-dark .swatch-hex {
+  color: #eee;
+  background: #2d2d2d;
+}
+
+.vscode-high-contrast .swatch-hex {
+  color: #fff;
+  background: #000;
+}
+
+
+/* 统一三部分宽度 */
+.image-container,
+.config-ui,
+.palette-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* 确保色卡容器与上方元素同宽 */
+.palette-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 0px 0;
+}
+
+/* 原图容器样式 */
+.image-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 配置UI容器样式 */
+.config-ui {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  align-items: center;
+}
+
+/* 色卡项样式 */
+.swatch {
+  width: calc((100% - 50px) / 6); /* 6个色卡时的宽度 */
+  min-width: 80px;
+}
+
+/* 调整布局顺序 */
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.image-container {
+  order: 1;
+}
+
+.palette-container {
+  order: 2;
+}
+
+.config-ui {
+  order: 3;
+  margin-top: 10px;
+}
+
+/* 配置UI容器样式 */
+.config-ui {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  align-items: center;
+}
+
+/* 色卡项样式 */
+.swatch {
+  width: calc((100% - 50px) / 6); /* 6个色卡时的宽度 */
+  min-width: 80px;
+}
+
+/* 调整原图和色卡布局 */
+.image-container {
+  margin-bottom: 0;
+}
+
+.palette-container {
+  margin-top: 0;
+  gap: 0;
+}
+
+/* 色卡样式调整 */
+.swatch {
+  height: 50%;
+  border-radius: 0;
+  margin: 0;
+}
+
+/* 选择控件padding */
+.config-ui {
+  padding: 10px 15px;
 }

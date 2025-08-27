@@ -11,26 +11,26 @@ const IMAGE_EXTS = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.svg'];
  * @return {void} 无返回
  */
 export function activate(context: vscode.ExtensionContext) {
-	console.log('Congratulations, your extension "image-color-palette" is now active!');
+  console.log('Congratulations, your extension "image-color-palette" is now active!');
 
-	// hello world 示例命令
-	const disposable = vscode.commands.registerCommand('image-color-palette.helloWorld', () => {
-		vscode.window.showInformationMessage('Hello World from image-color-palette!');
-	});
-	context.subscriptions.push(disposable);
+  // hello world 示例命令
+  const disposable = vscode.commands.registerCommand('image-color-palette.helloWorld', () => {
+    vscode.window.showInformationMessage('Hello World from image-color-palette!');
+  });
+  context.subscriptions.push(disposable);
 
-	// 生成图片色卡命令
-	const genPalette = vscode.commands.registerCommand('image-color-palette.generatePalette', async (resource: vscode.Uri) => {
-		try {
-			const target = await ensureTargetImage(resource);
-			if (!target) { return; }
+  // 生成图片色卡命令
+  const genPalette = vscode.commands.registerCommand('image-color-palette.generatePalette', async (resource: vscode.Uri) => {
+    try {
+      const target = await ensureTargetImage(resource);
+      if (!target) { return; }
 
-			openPaletteWebview(context, target);
-		} catch (err: any) {
-			vscode.window.showErrorMessage(`生成图片色卡失败: ${err?.message || String(err)}`);
-		}
-	});
-	context.subscriptions.push(genPalette);
+      openPaletteWebview(context, target);
+    } catch (err: any) {
+      vscode.window.showErrorMessage(`生成图片色卡失败: ${err?.message || String(err)}`);
+    }
+  });
+  context.subscriptions.push(genPalette);
 }
 
 /**
@@ -64,28 +64,45 @@ async function ensureTargetImage(resource?: vscode.Uri): Promise<vscode.Uri | un
  * @return {void} 无返回
  */
 function openPaletteWebview(context: vscode.ExtensionContext, imgUri: vscode.Uri): void {
-	const panel = vscode.window.createWebviewPanel(
-		'imageColorPalette',
-		'图片色卡',
-		vscode.ViewColumn.Beside,
-		{ enableScripts: true, retainContextWhenHidden: true }
-	);
+  // 创建并显示webview面板
+  const panel = vscode.window.createWebviewPanel(
+    'imageColorPalette',
+    '图片色卡',
+    vscode.ViewColumn.Beside,
+    {
+      enableScripts: true,
+      retainContextWhenHidden: true
+    }
+  );
 
-	const webview = panel.webview;
-	const imgSrc = webview.asWebviewUri(imgUri);
+  // 处理webview消息
+  panel.webview.onDidReceiveMessage(
+    message => {
+      switch (message.type) {
+        case 'copy':
+          vscode.env.clipboard.writeText(message.hex);
+          vscode.window.showInformationMessage(`已复制色号: ${message.hex}`);
+          break;
+        case 'copyAll':
+          vscode.env.clipboard.writeText(message.colors.join('\n'));
+          vscode.window.showInformationMessage(`已复制${message.colors.length}个色号`);
+          break;
+      }
+    },
+    undefined,
+    context.subscriptions
+  );
 
-	const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'media', 'paletteView.js'));
-	const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'media', 'palette.css'));
+  // 获取webview内容
+  const imageUri = panel.webview.asWebviewUri(imgUri);
+  const scriptUri = panel.webview.asWebviewUri(
+    vscode.Uri.joinPath(context.extensionUri, 'media', 'paletteView.js')
+  );
+  const styleUri = panel.webview.asWebviewUri(
+    vscode.Uri.joinPath(context.extensionUri, 'media', 'palette.css')
+  );
 
-	panel.webview.html = getWebviewHtml(imgSrc.toString(), scriptUri.toString(), styleUri.toString());
-
-	// 处理来自 webview 的消息（复制到剪贴板）
-	webview.onDidReceiveMessage(async (msg) => {
-		if (msg?.type === 'copy' && typeof msg?.hex === 'string') {
-			await vscode.env.clipboard.writeText(msg.hex);
-			vscode.window.showInformationMessage(`已复制色号: ${msg.hex}`);
-		}
-	});
+  panel.webview.html = getWebviewHtml(imageUri.toString(), scriptUri.toString(), styleUri.toString());
 }
 
 /**
