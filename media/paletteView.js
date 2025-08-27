@@ -179,6 +179,12 @@
    */
   function copyHex(hex){
     if (vscode){
+      const colorType = document.getElementById('colorType').value;
+      if (colorType === 'RGB'){ 
+        hex = hexToRgb(hex);
+      }
+      console.log('colorType', colorType);
+      console.log('hex', hex);
       vscode.postMessage({ type: 'copy', hex });
     } else if (navigator?.clipboard?.writeText){
       navigator.clipboard.writeText(hex);
