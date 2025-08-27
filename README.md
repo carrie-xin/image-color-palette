@@ -1,71 +1,33 @@
-# image-color-palette README
+# 图片色卡提取工具
 
-This is the README for your extension "image-color-palette". After writing up a brief description, we recommend including the following sections.
+一款 VS Code 扩展，可以从图片中提取主色调并生成色卡，支持复制色号到剪贴板。
 
-## Features
+## 功能特性
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- 从图片中自动提取 6-10 种主色调
+- 支持显示 HEX 和 RGB 两种色号格式
+- 点击色卡或文字可复制对应色号
+- 一键复制所有色号功能
+- 支持 PNG/JPG/JPEG/GIF/WEBP/BMP/SVG 格式
 
-For example if there is an image subfolder under your extension project workspace:
+## 使用方法
 
-\!\[feature X\]\(images/feature-x.png\)
+1. 在 VS Code 资源管理器中右键点击图片文件
+2. 选择"生成图片色卡"选项
+3. 右侧将打开一个面板显示图片和提取的色卡
+4. 点击色卡或色号文字可复制到剪贴板
+5. 点击"复制全部色号"按钮可复制所有色号
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## 快捷键
 
-## Requirements
+- 在资源管理器中对图片右键选择"生成图片色卡"
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+## 开发信息
 
-## Extension Settings
+开发者: Xin
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+GitHub 仓库: [image-color-palette](https://github.com/your-repo/image-color-palette)
 
-For example:
+## 许可证
 
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+MIT License
