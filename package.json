@@ -4,20 +4,35 @@
   "description": "图片色卡",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.103.0"
+    "vscode": "^1.102.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:image-color-palette.generatePalette"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "image-color-palette.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "image-color-palette.generatePalette",
+        "title": "生成图片色卡"
       }
-    ]
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "image-color-palette.generatePalette",
+          "group": "navigation@100",
+          "when": "resourceExtname == .png || resourceExtname == .jpg || resourceExtname == .jpeg || resourceExtname == .gif || resourceExtname == .webp || resourceExtname == .bmp || resourceExtname == .svg"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

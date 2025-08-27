@@ -2,24 +2,117 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+// 支持的图片扩展名
+const IMAGE_EXTS = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.svg'];
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
+/**
+ * 激活扩展入口
+ * @param {vscode.ExtensionContext} context 扩展上下文
+ * @return {void} 无返回
+ */
+export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "image-color-palette" is now active!');
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
+	// hello world 示例命令
 	const disposable = vscode.commands.registerCommand('image-color-palette.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello World from image-color-palette!');
 	});
-
 	context.subscriptions.push(disposable);
+
+	// 生成图片色卡命令
+	const genPalette = vscode.commands.registerCommand('image-color-palette.generatePalette', async (resource: vscode.Uri) => {
+		try {
+			const target = await ensureTargetImage(resource);
+			if (!target) { return; }
+
+			openPaletteWebview(context, target);
+		} catch (err: any) {
+			vscode.window.showErrorMessage(`生成图片色卡失败: ${err?.message || String(err)}`);
+		}
+	});
+	context.subscriptions.push(genPalette);
+}
+
+/**
+ * 校验并获取目标图片 URI
+ * @param {vscode.Uri | undefined} resource 资源管理器传入的文件 URI
+ * @return {Promise<vscode.Uri | undefined>} 校验后的图片 URI
+ */
+async function ensureTargetImage(resource?: vscode.Uri): Promise<vscode.Uri | undefined> {
+	// 如果没有传入，从活动编辑器获取
+	let uri = resource;
+	if (!uri) {
+		uri = vscode.window.activeTextEditor?.document.uri;
+	}
+	if (!uri) {
+		vscode.window.showWarningMessage('请在资源管理器中选择一张图片，或右键图片使用“生成图片色卡”。');
+		return undefined;
+	}
+
+	const ext = uri.path.substring(uri.path.lastIndexOf('.')).toLowerCase();
+	if (!IMAGE_EXTS.includes(ext)) {
+		vscode.window.showWarningMessage('仅支持图片文件：png/jpg/jpeg/gif/webp/bmp/svg');
+		return undefined;
+	}
+	return uri;
+}
+
+/**
+ * 打开 Webview 面板并注入 UI 与脚本
+ * @param {vscode.ExtensionContext} context 扩展上下文
+ * @param {vscode.Uri} imgUri 目标图片 URI
+ * @return {void} 无返回
+ */
+function openPaletteWebview(context: vscode.ExtensionContext, imgUri: vscode.Uri): void {
+	const panel = vscode.window.createWebviewPanel(
+		'imageColorPalette',
+		'图片色卡',
+		vscode.ViewColumn.Beside,
+		{ enableScripts: true, retainContextWhenHidden: true }
+	);
+
+	const webview = panel.webview;
+	const imgSrc = webview.asWebviewUri(imgUri);
+
+	const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'media', 'paletteView.js'));
+	const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'media', 'palette.css'));
+
+	panel.webview.html = getWebviewHtml(imgSrc.toString(), scriptUri.toString(), styleUri.toString());
+
+	// 处理来自 webview 的消息（复制到剪贴板）
+	webview.onDidReceiveMessage(async (msg) => {
+		if (msg?.type === 'copy' && typeof msg?.hex === 'string') {
+			await vscode.env.clipboard.writeText(msg.hex);
+			vscode.window.showInformationMessage(`已复制色号: ${msg.hex}`);
+		}
+	});
+}
+
+/**
+ * 生成 webview HTML
+ * @param {string} imgSrc 图片 webview 可访问的 URL
+ * @param {string} scriptUri 脚本 URL
+ * @param {string} styleUri 样式 URL
+ * @return {string} HTML 字符串
+ */
+function getWebviewHtml(imgSrc: string, scriptUri: string, styleUri: string): string {
+	return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="${styleUri}">
+<title>图片色卡</title>
+</head>
+<body>
+  <div id="app">
+    <div class="image-wrap"><img id="sourceImage" src="${imgSrc}" alt="source"/></div>
+    <div id="paletteWrap" class="palette-wrap"></div>
+  </div>
+  <script>window.__VSC__ = acquireVsCodeApi && acquireVsCodeApi();</script>
+  <script src="${scriptUri}"></script>
+</body>
+</html>`;
 }
 
 // This method is called when your extension is deactivated
