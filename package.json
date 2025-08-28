@@ -1,10 +1,11 @@
 {
   "name": "image-color-palette",
-  "displayName": "image-color-palette",
-  "description": "图片色卡",
+  "displayName": "Image Color Palette|图片取色",
+  "description": "从图片中提取主色调并生成色卡，支持复制色号",
   "version": "0.0.1",
+  "publisher": "CarrieXin",
   "engines": {
-    "vscode": "^1.103.0"
+    "vscode": "^1.74.0"
   },
   "categories": [
     "Other"
@@ -40,7 +41,7 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.103.0",
+    "@types/vscode": "^1.74.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
     "@typescript-eslint/eslint-plugin": "^8.39.0",
