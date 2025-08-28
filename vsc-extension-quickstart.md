@@ -1,48 +1,35 @@
-# Welcome to your VS Code Extension
+# 图片色卡提取工具
 
-## What's in the folder
+一款 VS Code 扩展，可以从图片中提取主色调并生成色卡，支持复制色号到剪贴板。
 
-* This folder contains all of the files necessary for your extension.
-* `package.json` - this is the manifest file in which you declare your extension and command.
-  * The sample plugin registers a command and defines its title and command name. With this information VS Code can show the command in the command palette. It doesn’t yet need to load the plugin.
-* `src/extension.ts` - this is the main file where you will provide the implementation of your command.
-  * The file exports one function, `activate`, which is called the very first time your extension is activated (in this case by executing the command). Inside the `activate` function we call `registerCommand`.
-  * We pass the function containing the implementation of the command as the second parameter to `registerCommand`.
+## 功能特性
 
-## Setup
+- 从图片中自动提取 4-8 种主色调
+- 支持显示 HEX 和 RGB 两种色号格式
+- 点击色卡或文字可复制对应色号
+- 一键复制所有色号功能
+- 支持 PNG/JPG/JPEG/GIF/WEBP/BMP/SVG 格式
 
-* install the recommended extensions (amodio.tsl-problem-matcher, ms-vscode.extension-test-runner, and dbaeumer.vscode-eslint)
+## 使用方法
 
+1. 在 VS Code 资源管理器中右键点击图片文件
+2. 选择"生成图片色卡"选项
+3. 右侧将打开一个面板显示图片和提取的色卡
+4. 点击色卡或色号文字可复制到剪贴板
+5. 点击"复制全部色号"按钮可复制所有色号
+![alt text](https://raw.githubusercontent.com/carrie-xin/image-color-palette/master/resources/image-2.png)
 
-## Get up and running straight away
+## 效果截图
+![alt text](https://raw.githubusercontent.com/carrie-xin/image-color-palette/master/resources/image.png)
+![alt text](https://raw.githubusercontent.com/carrie-xin/image-color-palette/master/resources/image-1.png)
+## 快捷键
 
-* Press `F5` to open a new window with your extension loaded.
-* Run your command from the command palette by pressing (`Ctrl+Shift+P` or `Cmd+Shift+P` on Mac) and typing `Hello World`.
-* Set breakpoints in your code inside `src/extension.ts` to debug your extension.
-* Find output from your extension in the debug console.
+- 在资源管理器中对图片右键选择"生成图片色卡"
 
-## Make changes
+## 开发信息
 
-* You can relaunch the extension from the debug toolbar after changing code in `src/extension.ts`.
-* You can also reload (`Ctrl+R` or `Cmd+R` on Mac) the VS Code window with your extension to load your changes.
+开发者: Xin
 
+## 许可证
 
-## Explore the API
-
-* You can open the full set of our API when you open the file `node_modules/@types/vscode/index.d.ts`.
-
-## Run tests
-
-* Install the [Extension Test Runner](https://marketplace.visualstudio.com/items?itemName=ms-vscode.extension-test-runner)
-* Run the "watch" task via the **Tasks: Run Task** command. Make sure this is running, or tests might not be discovered.
-* Open the Testing view from the activity bar and click the Run Test" button, or use the hotkey `Ctrl/Cmd + ; A`
-* See the output of the test result in the Test Results view.
-* Make changes to `src/test/extension.test.ts` or create new test files inside the `test` folder.
-  * The provided test runner will only consider files matching the name pattern `**.test.ts`.
-  * You can create folders inside the `test` folder to structure your tests any way you want.
-
-## Go further
-
-* Reduce the extension size and improve the startup time by [bundling your extension](https://code.visualstudio.com/api/working-with-extensions/bundling-extension).
-* [Publish your extension](https://code.visualstudio.com/api/working-with-extensions/publishing-extension) on the VS Code extension marketplace.
-* Automate builds by setting up [Continuous Integration](https://code.visualstudio.com/api/working-with-extensions/continuous-integration).
+MIT License

@@ -17,11 +17,11 @@
 3. 右侧将打开一个面板显示图片和提取的色卡
 4. 点击色卡或色号文字可复制到剪贴板
 5. 点击"复制全部色号"按钮可复制所有色号
-![alt text](./resources/image-2.png)
+![alt text](https://raw.githubusercontent.com/carrie-xin/image-color-palette/master/resources/image-2.png)
 
 ## 效果截图
-![alt text](./resources/image.png)
-![alt text](./resources/image-1.png)
+![alt text](https://raw.githubusercontent.com/carrie-xin/image-color-palette/master/resources/image.png)
+![alt text](https://raw.githubusercontent.com/carrie-xin/image-color-palette/master/resources/image-1.png)
 ## 快捷键
 
 - 在资源管理器中对图片右键选择"生成图片色卡"
