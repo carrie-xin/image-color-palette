@@ -4,7 +4,7 @@
 
 ## 功能特性
 
-- 从图片中自动提取 6-10 种主色调
+- 从图片中自动提取 4-8 种主色调
 - 支持显示 HEX 和 RGB 两种色号格式
 - 点击色卡或文字可复制对应色号
 - 一键复制所有色号功能
@@ -17,7 +17,11 @@
 3. 右侧将打开一个面板显示图片和提取的色卡
 4. 点击色卡或色号文字可复制到剪贴板
 5. 点击"复制全部色号"按钮可复制所有色号
+![alt text](./resources/image-2.png)
 
+## 效果截图
+![alt text](./resources/image.png)
+![alt text](./resources/image-1.png)
 ## 快捷键
 
 - 在资源管理器中对图片右键选择"生成图片色卡"
@@ -25,8 +29,6 @@
 ## 开发信息
 
 开发者: Xin
-
-GitHub 仓库: [image-color-palette](https://github.com/your-repo/image-color-palette)
 
 ## 许可证
 
